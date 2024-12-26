@@ -1,5 +1,5 @@
 import { client } from "@/sanity/lib/client";
-import Image from "next/image";
+import ProductCard from "@/components/ProductCard";
 
 // Define TypeScript interface for Product
 interface Product {
@@ -30,25 +30,13 @@ export default async function ProductsPage() {
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((product: Product) => (
-          <div
+          <ProductCard
             key={product._id}
-            className="border rounded-lg p-4 shadow hover:shadow-lg transition"
-          >
-            {/* Product Image */}
-            <div className="relative w-full h-48 mb-4">
-              <Image
-                src={product.imageUrl}
-                alt={product.title}
-                layout="fill"
-                objectFit="cover"
-                className="rounded"
-              />
-            </div>
-            {/* Product Title */}
-            <h2 className="text-xl font-semibold mb-2">{product.title}</h2>
-            {/* Product Price */}
-            <p className="text-gray-700">${product.price}</p>
-          </div>
+            id={product._id}
+            image={product.imageUrl}
+            title={product.title}
+            price={product.price} // Pass price as a number
+          />
         ))}
       </div>
     </div>
