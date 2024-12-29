@@ -12,7 +12,7 @@ interface Product {
 // Utility function to fetch products from Sanity CMS
 const fetchProducts = async (): Promise<Product[]> => {
   const query = `*[_type == "product"]{
-    _id,
+    _id,AC
     title,
     price,
     "imageUrl": image.asset->url

@@ -1,73 +1,115 @@
-"use client";
-
-import React, { useEffect, useState } from "react";
-import { useAuth } from "@/context/AuthContext";
-import Image from "next/image";
-
-interface CartItem {
-  id: string;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+// app/cart/page.tsx
+"use client"; // Mark this file as a client component
+import React, { useState, useEffect } from "react";
 
 export default function CartPage() {
-  const { currentUser } = useAuth();
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Hardcoded userId for demonstration
+  const userId = "guest_123"; 
+
+  const fetchCart = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/cart?userId=${userId}`);
+      const data = await res.json();
+      setItems(data.items || []);
+    } catch (error) {
+      console.error("Failed to fetch cart", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateQuantity = async (productId: string, quantity: number) => {
+    try {
+      await fetch("/api/cart", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, productId, quantity }),
+      });
+      fetchCart();
+    } catch (error) {
+      console.error("Error updating quantity", error);
+    }
+  };
+
+  const removeItem = async (productId: string) => {
+    try {
+      await fetch("/api/cart", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId, productId }),
+      });
+      fetchCart();
+    } catch (error) {
+      console.error("Error removing item", error);
+    }
+  };
 
   useEffect(() => {
-    const fetchCart = async () => {
-      if (!currentUser) return;
-      try {
-        const res = await fetch(`/api/cart?userId=${currentUser.uid}`);
-        const data = await res.json();
-
-        console.log("API response data:", data); // <-- Log API response
-        setCartItems(data);
-      } catch (error) {
-        console.error("Error fetching cart items:", error); // <-- Log errors
-      }
-    };
-
     fetchCart();
-  }, [currentUser]);
+  }, []);
 
-  if (!currentUser) {
-    return <p>Please log in to view your cart.</p>;
-  }
+  if (loading) return <p>Loading cart...</p>;
+
+  const totalPrice = items.reduce((acc, item) => acc + (item.productPrice * item.quantity), 0);
 
   return (
-    <div className="container mx-auto p-8">
-      <h1 className="text-3xl font-bold mb-6">Your Shopping Cart</h1>
-      {cartItems.length === 0 ? (
-        <p className="text-gray-600">Your cart is empty. Add some products!</p>
+    <main className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
+
+      {items.length === 0 ? (
+        <p>Your cart is empty.</p>
       ) : (
-        <div className="grid gap-6">
-          {cartItems.map((item) => (
+        <div className="space-y-4">
+          {items.map((item) => (
             <div
-              key={item.id}
-              className="flex items-center border p-4 rounded-lg shadow hover:shadow-lg"
+              key={item.productId}
+              className="flex items-center justify-between border p-4"
             >
-              <Image
-                src={item.image}
-                alt={item.name}
-                width={100}
-                height={100}
-                className="rounded"
-              />
-              <div className="flex-1 px-4">
-                <p className="text-lg font-semibold">{item.name}</p>
-                <p className="text-gray-600">Price: ${item.price}</p>
-                <p className="text-gray-600">Quantity: {item.quantity}</p>
-                <p className="text-gray-800 font-bold">
-                  Total: ${item.price * item.quantity}
-                </p>
+              <div>
+                <p className="font-semibold">{item.productName}</p>
+                <p>${(item.productPrice / 100).toFixed(2)}</p>
+              </div>
+              <div className="flex items-center space-x-4">
+                <button
+                  onClick={() =>
+                    updateQuantity(item.productId, item.quantity - 1)
+                  }
+                  disabled={item.quantity <= 1}
+                  className="px-2 py-1 bg-gray-200 rounded"
+                >
+                  -
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  onClick={() =>
+                    updateQuantity(item.productId, item.quantity + 1)
+                  }
+                  className="px-2 py-1 bg-gray-200 rounded"
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => removeItem(item.productId)}
+                  className="text-red-500 hover:underline"
+                >
+                  Remove
+                </button>
               </div>
             </div>
           ))}
+          <div className="text-right font-semibold">
+            Total: ${(totalPrice / 100).toFixed(2)}
+          </div>
         </div>
       )}
-    </div>
+    </main>
   );
 }
