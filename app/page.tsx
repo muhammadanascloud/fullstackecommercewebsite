@@ -31,12 +31,11 @@ export default async function ProductsPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
         {products.map((product: Product) => (
           <ProductCard
-            key={product._id}
-            id={product._id}
-            image={product.imageUrl}
-            title={product.title}
-            category="Some Category" // Replace with actual category if available
-            price={product.price.toString()}
+          key={product._id}
+          id={product._id}
+          image={product.imageUrl}
+          title={product.title}
+          price={product.price} // Pass price as a number
           />
         ))}
       </div>

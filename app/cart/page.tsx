@@ -2,12 +2,19 @@
 "use client"; // Mark this file as a client component
 import React, { useState, useEffect } from "react";
 
+interface CartItem {
+  productId: string;
+  productName: string;
+  productPrice: number;
+  quantity: number;
+}
+
 export default function CartPage() {
-  const [items, setItems] = useState<any[]>([]);
+  const [items, setItems] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Hardcoded userId for demonstration
-  const userId = "guest_123"; 
+  const userId = "guest_123";
 
   const fetchCart = async () => {
     setLoading(true);
@@ -58,7 +65,10 @@ export default function CartPage() {
 
   if (loading) return <p>Loading cart...</p>;
 
-  const totalPrice = items.reduce((acc, item) => acc + (item.productPrice * item.quantity), 0);
+  const totalPrice = items.reduce(
+    (acc, item) => acc + item.productPrice * item.quantity,
+    0
+  );
 
   return (
     <main className="p-4">

@@ -4,15 +4,15 @@ import React from "react";
 import Image from "next/image";
 
 interface ProductCardProps {
-  productId: string; // Replacing 'id' with 'productId' for consistency with AI's code
-  name: string; // Replacing 'title' with 'name'
-  price: number;
-  image: string; // Keeping the 'image' prop from your code
+  id: string; // Consistent with the prop being passed
+  title: string; // Consistent with the prop being passed
+  price: number; // Expecting a number for proper formatting
+  image: string; // Keeping 'image' as is
 }
 
 export default function ProductCard({
-  productId,
-  name,
+  id,
+  title,
   price,
   image,
 }: ProductCardProps) {
@@ -27,9 +27,9 @@ export default function ProductCard({
         },
         body: JSON.stringify({
           userId,
-          productId,
-          productName: name,
-          productPrice: price, // Assuming price is in cents
+          productId: id,
+          productName: title,
+          productPrice: price, // Price as number
           quantity: 1,
         }),
       });
@@ -44,18 +44,18 @@ export default function ProductCard({
       {/* Display Product Image */}
       <Image
         src={image}
-        alt={name}
+        alt={title}
         width={300}
         height={300}
         className="w-full h-auto"
       />
 
       <div className="p-4">
-        {/* Display Product Name */}
-        <h2 className="text-lg font-semibold">{name}</h2>
+        {/* Display Product Title */}
+        <h2 className="text-lg font-semibold">{title}</h2>
 
-        {/* Display Price (formatted to dollars) */}
-        <p className="text-gray-800 font-bold mt-2">${(price / 100).toFixed(2)}</p>
+        {/* Display Price (formatted with dollars and cents) */}
+        <p className="text-gray-800 font-bold mt-2">${price.toFixed(2)}</p>
 
         {/* Add to Cart Button */}
         <button
