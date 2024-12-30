@@ -1,9 +1,6 @@
 // lib/db/index.ts
-import { Pool } from "pg";
-import { drizzle } from "drizzle-orm/node-postgres";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres"; // postgres-js library
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
-
-export const db = drizzle(pool);
+const client = postgres(process.env.DATABASE_URL!, { ssl: "require" }); // Ensure SSL
+export const db = drizzle(client); // Initialize drizzle with the client
