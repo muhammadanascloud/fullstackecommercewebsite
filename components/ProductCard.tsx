@@ -4,10 +4,10 @@ import React from "react";
 import Image from "next/image";
 
 interface ProductCardProps {
-  id: string; // Consistent with the prop being passed
-  title: string; // Consistent with the prop being passed
+  id: string;
+  title: string;
   price: number; // Expecting a number for proper formatting
-  image: string; // Keeping 'image' as is
+  image: string;
 }
 
 export default function ProductCard({
@@ -29,7 +29,7 @@ export default function ProductCard({
           userId,
           productId: id,
           productName: title,
-          productPrice: price, // Price as number
+          productPrice: price, // Send price as a number
           quantity: 1,
         }),
       });
@@ -54,7 +54,7 @@ export default function ProductCard({
         {/* Display Product Title */}
         <h2 className="text-lg font-semibold">{title}</h2>
 
-        {/* Display Price (formatted with dollars and cents) */}
+        {/* Display Price */}
         <p className="text-gray-800 font-bold mt-2">${price.toFixed(2)}</p>
 
         {/* Add to Cart Button */}

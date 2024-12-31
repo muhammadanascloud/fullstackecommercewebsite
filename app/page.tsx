@@ -11,13 +11,18 @@ interface Product {
 
 // Utility function to fetch products from Sanity CMS
 const fetchProducts = async (): Promise<Product[]> => {
-  const query = `*[_type == "product"]{
-    _id,
-    title,
-    price,
-    "imageUrl": image.asset->url
-  }`;
-  return await client.fetch(query);
+  try {
+    const query = `*[_type == "product"]{
+      _id,
+      title,
+      price,
+      "imageUrl": image.asset->url
+    }`;
+    return await client.fetch(query);
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return []; // Return an empty array if there's an error
+  }
 };
 
 export default async function ProductsPage() {
@@ -27,17 +32,22 @@ export default async function ProductsPage() {
     <div className="p-8">
       {/* Page Title */}
       <h1 className="text-3xl font-bold mb-6">All Products</h1>
+
       {/* Product Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-        {products.map((product: Product) => (
-          <ProductCard
-          key={product._id}
-          id={product._id}
-          image={product.imageUrl}
-          title={product.title}
-          price={product.price} // Pass price as a number
-          />
-        ))}
+        {products.length > 0 ? (
+          products.map((product: Product) => (
+            <ProductCard
+              key={product._id}
+              id={product._id}
+              image={product.imageUrl}
+              title={product.title}
+              price={product.price} // Pass price as a number
+            />
+          ))
+        ) : (
+          <p>No products available at the moment.</p>
+        )}
       </div>
     </div>
   );

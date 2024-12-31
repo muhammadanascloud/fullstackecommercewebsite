@@ -1,4 +1,3 @@
-// drizzle.config.ts
 import type { Config } from "drizzle-kit";
 
 export default {
@@ -6,10 +5,10 @@ export default {
   out: "./drizzle/migrations", // Directory to store migrations
   dialect: "postgresql", // Specify PostgreSQL as the dialect
   dbCredentials: {
-    user: process.env.PGUSER || "neondb_owner",
-    password: process.env.PGPASSWORD || "CsF8ga1mnbjd",
-    host: process.env.PGHOST || "ep-dark-heart-a754m23z-pooler.ap-southeast-2.aws.neon.tech",
+    user: process.env.PGUSER || "neondb_owner", // Matches .env.local
+    password: process.env.PGPASSWORD || "1rNI3PHFBiqx", // Updated password
+    host: process.env.PGHOST || "ep-white-sun-a7ogye38-pooler.ap-southeast-2.aws.neon.tech", // Updated host
     port: 5432, // Default Postgres port
-    database: process.env.PGDATABASE || "neondb",
+    database: process.env.PGDATABASE || "neondb", // Matches .env.local
   },
 } satisfies Config;
